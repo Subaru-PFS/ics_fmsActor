@@ -1,0 +1,22 @@
+#!/bin/bash
+sysdir=/sys/class/gpio
+# ports for relay hat for monitor
+
+# 4 output ports
+# ch      1  2  3  4  
+for i in 26 19 13  6 
+do
+    if [ ! -d $sysdir/gpio$i ]  # not already exported
+    then
+        echo " Setting up port $i "
+        echo $i > $sysdir/export
+    fi
+    if [ ! -d $sysdir/gpio$i ]  # I didn't screw up
+    then
+        echo "Failed to export BCM port $i"
+    fi
+    echo "out" > $sysdir/gpio$i/direction
+    echo 0     > $sysdir/gpio$i/active_low
+    echo 0     > $sysdir/gpio$i/value
+done
+

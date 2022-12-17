@@ -1,0 +1,9 @@
+# little script to take and write over ssh to arianna; takes camno and exp time
+camno=$1
+timems=$2
+date
+echo "starting 0"
+snap $timems  0 -c $camno -f /tmp/junk0.fits
+echo
+echo "writing 0"
+rsync -avx /tmp/junk0.fits arianna:/Temp &

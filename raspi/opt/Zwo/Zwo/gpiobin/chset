@@ -1,0 +1,16 @@
+#!/bin/bash
+if [ "$1" = "" ] || [ "$2" = "" ]
+then
+    echo "USAGE: chset channel(1-4) value(0 or 1)"
+    exit
+fi
+val=$2
+ch=$1
+case $ch in
+    1) port=26 ;;   # Rl1
+    2) port=10 ;;   # Rl2
+    3) port=13 ;;   # Rl3
+    4) port=6  ;;   # Rl4
+    *) echo " No such channel as $ch"
+esac
+echo $val > /sys/class/gpio/gpio$port/value

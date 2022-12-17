@@ -1,0 +1,11 @@
+#!/bin/bash
+#  turns all monitor leds ON
+
+for port in 26 19 13 6
+do
+    echo 1 > /sys/class/gpio/gpio$port/value
+done
+
+
+
+

@@ -1,0 +1,66 @@
+
+Reconcile . to/from krifpi:/Temp/Pfscalibpi/binmonitor on
+Thu Oct 18 22:33:19 EDT 2018
+Copying files from . to krifpi:/Temp/Pfscalibpi/binmonitor
+
+sending incremental file list
+
+Copying files from krifpi:/Temp/Pfscalibpi/binmonitor to . and creating backups in .
+
+receiving incremental file list
+
+sent 310 bytes  received 99 bytes  818.00 bytes/sec
+total size is 0  speedup is 0.00
+
+
+Reconcile . to/from krifpi:/Temp/Pfscalibpi/binmonitor on
+Thu Oct 18 22:33:47 EDT 2018
+Copying files from . to krifpi:/Temp/Pfscalibpi/binmonitor
+
+sending incremental file list
+
+Copying files from krifpi:/Temp/Pfscalibpi/binmonitor to . and creating backups in .
+
+receiving incremental file list
+
+sent 310 bytes  received 99 bytes  818.00 bytes/sec
+total size is 0  speedup is 0.00
+
+
+Reconcile . to/from krifpi:/Temp/Pfscalibpi/binmonitor on
+Thu Oct 18 22:35:04 EDT 2018
+Copying files from . to krifpi:/Temp/Pfscalibpi/binmonitor
+
+sending incremental file list
+./
+portsetup
+
+sent 718 bytes  received 44 bytes  1,524.00 bytes/sec
+total size is 958  speedup is 1.26
+
+Copying files from krifpi:/Temp/Pfscalibpi/binmonitor to . and creating backups in .
+
+receiving incremental file list
+
+sent 322 bytes  received 152 bytes  316.00 bytes/sec
+total size is 958  speedup is 2.02
+
+
+Reconcile . to/from krifpi:/Temp/Pfscalibpi/binmonitor on
+Thu Oct 18 22:41:43 EDT 2018
+Copying files from . to krifpi:/Temp/Pfscalibpi/binmonitor
+
+sending incremental file list
+./
+chset
+
+sent 555 bytes  received 38 bytes  1,186.00 bytes/sec
+total size is 1,288  speedup is 2.17
+
+Copying files from krifpi:/Temp/Pfscalibpi/binmonitor to . and creating backups in .
+
+receiving incremental file list
+
+sent 322 bytes  received 178 bytes  1,000.00 bytes/sec
+total size is 1,288  speedup is 2.58
+

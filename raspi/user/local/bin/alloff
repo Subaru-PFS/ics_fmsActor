@@ -1,0 +1,8 @@
+#!/bin/bash
+#  turns all monitor leds OFF
+
+for port in 26 19 13 6
+do
+    echo 0 > /sys/class/gpio/gpio$port/value
+done
+

@@ -1,0 +1,24 @@
+#!/bin/bash
+if [ "$1" = "" ] || [ "$2" = "" ]
+then
+    echo "USAGE: monled channel(1-4) value(0/1 or on/off )"
+    exit
+fi
+val=$2
+ch=$1
+case $ch in
+    1) port=26 ;;   # Rl1
+    2) port=19 ;;   # Rl2
+    3) port=13 ;;   # Rl3
+    4) port=6  ;;   # Rl4
+    *) echo " No such channel as $ch"
+esac
+if [ $val = "off" ]
+then 
+    val=0
+fi
+if [ "$val" = "on" ]
+then
+    val=1
+fi
+echo $val > /sys/class/gpio/gpio$port/value

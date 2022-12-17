@@ -1,0 +1,14 @@
+
+i=0
+
+while true
+do
+    snap -c 0 -f 100 0
+    snap -c 1 -f 100 0
+    snap -n frd0 -f 100 0
+    snap -n frd1 -f 100 0
+    echo "Iteration $i"
+    echo "Iteration $i" > /tmp/stresscount
+    rsync -avx /tmp/*.fits /tmp/stresscount jeg@arianna:/scr4/Mondata
+    (( i++ ))
+done

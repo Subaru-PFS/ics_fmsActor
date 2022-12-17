@@ -1,0 +1,27 @@
+You MUST do two things to use the Zwo software successfully:
+
+1. The camera will fail with the default USB input buffer size (16MB 
+You MUST allocate enough memory in usb system for camera: The images
+at 16-bit capture are ~37MB, so 
+
+cat 40 > /sys/module/usbcore/parameters/usbfs_memory_mb 
+
+There are multiple ways to do this, but I think this works. Put this
+line in in
+/etc/rc.local or /etc/rc.d/rc.local, as appropriate
+
+2. Udev issue: If you wish to use the camera as a non-root user, 
+
+make a file 
+
+95-asicamera.rules in /etc/udev/rules.d
+
+with content
+
+ACTION=="add", ATTR{idVendor}=="03c3", RUN+="/bin/sh -c '/bin/echo 200 >/sys/module/usbcore/parameters/usbfs_memory_mb'"
+# All ASI Cameras and filter wheels
+SUBSYSTEMS=="usb", ATTR{idVendor}=="03c3", MODE="0666"
+
+
+
+

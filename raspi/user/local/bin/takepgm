@@ -1,0 +1,24 @@
+#!/bin/bash
+# takes a pgm file for one camera
+
+if [ "$1" = "" ]
+then
+    echo " USAGE: takefits exptime(ms) [cameraname/number]"
+    echo " If only one camera is connected, second arg can be omitted"
+fi
+
+time=$1
+
+if [ "$2" = "" ]
+then
+    camstr=" -c 0 "
+elif  [ "$2" -eq "$2" ] 2> /dev/null   # integer
+then
+    camstr=" -c $2"
+else
+    camstr=" -n $2"
+fi
+
+# echo "camstr = $camstr"    
+
+snap $camstr -p 1 $time 0

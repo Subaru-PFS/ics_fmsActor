@@ -1,0 +1,13 @@
+#!/bin/bash
+sysdir=/sys/class/gpio
+
+# leave out 5, 6, 26 for the moment--7 output ports
+for i in 23 24 25 16 17 27 22
+do
+    echo $i > $sysdir/unexport
+    if [ -d $sysdir/gpio$i ]
+    then
+        echo "Failed to disable BCM port $i"
+    fi
+done
+

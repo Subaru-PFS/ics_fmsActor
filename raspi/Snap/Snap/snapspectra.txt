@@ -1,0 +1,135 @@
+Spectra from test lamps
+
+830 line grating, d = 1.2048 microns = 12048A line spacing
+
+lam = d sin(thetin)
+
+so 
+
+Thetin lam
+  20   4120
+  21   4317
+  22   4513
+  23   4707
+  24   4900
+  25   5091
+  26   5281
+  27   5469
+  28   5656
+  29   5840
+  30   6023
+  31   6205
+  32   6384
+  33   6561
+  34   6737
+  35   6910
+  36   7081
+  37   7250
+  38   7417
+  39   7582
+  40   7744
+  41   7904
+  42   8061
+  43   8216
+  44   8369
+  45   8519
+  46   8666
+  47   8811
+  48   8953
+  49   9092
+  50   9229
+
+reduced 4:1 the pics are 1164 x 880, 17.6 x 13.1mm, pixels 15.2u (4 x 3.8)
+
+dlam = cos(thetout)* d * dthetout
+
+max angle is 8,8/50. = .176 radians; cos = 0.984
+lens corrects for distortion, so preserves TANGENTS, probably.
+
+lam = d * (sin(thin) + sin(thout)) = lam0 + d*sin(thout)
+
+p = pmid + f*tan(thout)/Pitch
+
+roughly, 
+
+lam = lam0 + d*thout = lam0 + d*Pitch*(p-p0)/f ~ lam0 + 12048*.0152*dp /50.
+    = lam0 + 3.66*dp  (experimentally 3.58, but use better expression below;
+                        probably focal length is in error)zoomcons
+
+******************
+
+more accurately:
+
+p - p0 = f*tan(thout)/Pitch
+so
+
+tan(thout) = Pitch*(p-p0)/f
+
+thout = atan(Pitch*(p-p0)/f)
+lam = lam0 + d*sin(thout) = lam0 + d*sin(atan(Pitch*(p-p0)/f)
+
+lam = lam0 + 1204.8nm*sin(atan(3.04e-4*(p-p0))) in the .ppm
+                               2.947e-4   622.6 now
+
+
+    = lam0 + 1204.8nm*sin(atan(7.60e-5*(p-p0))) in the .fits
+
+red end:
+
+5562         present, weak
+5570 at 401   <--
+5870 at 486   <--  pair wants 3.55
+7587 at 973 
+7601 at 977   <--
+7695 at 1004 
+7854 at 1050       want 3.50 out here
+8113 at 1124 
+8190 at 1148
+
+blue, 1.5s exposure snap-30.pgm
+
+4273 at 24
+4319 at 38 ?
+4376 at 55
+4454 at 76
+4464 at 80
+4502 at 91
+5570 at 396
+5870 at 482
+shift red--subtract 4
+7587 at 969 
+7601 at 973   <--
+7695 at 1000 
+7854 at 1046       want 3.50 out here
+8113 at 1120 
+8190 at 1144
+
+1164 at end, mid is 582, midlam is essentially 6230 = 623.0nm
+
+really nothing until 5570 strong line at 38, but there are not supposed to
+be any.
+
+So this setting covers ~4200 - 8240, so about 4000A on the device.
+
+
+It looks as if it saturates at about 300ms. check. 400 is OK
+
+hspectrum.m in mirage does a swath. Depends on alignment of lines
+AND spectrum. Need holder for lamp.
+
+Current (evening 180306) has lamp 10 inches in front of drawerfront;
+current optical axis is 34" off the floor.
+Aluminum beam is 37" off the floor
+beam is 2" x 0.5"
+U-lamps are about 1.5" wide, 4" from top of U to electrode bulge
+tubing is 7.6mm and 5.1mm , space at least 23mm tube to tube
+
+
+want two setups, 3800-7800, center 5800, split 5570/5870 for Kr 29 degrees
+                 7000-11000 center 9000, near 8776              49 degrees
+
+
+lamp mount --assume 23mm space, some 5mm some 7.5mm tubing, so cut
+`slot' 5mm deep, 1/2" from top is OK. active tube should be free
+from 1" down from top of lamp, 1.5" from top of holder
+block 3.4 x 1.7 x 1

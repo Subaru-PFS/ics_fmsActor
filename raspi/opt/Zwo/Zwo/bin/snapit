@@ -1,0 +1,25 @@
+# little script to take and write over ssh 4 pictures -- 45 sec on Pi
+date
+echo "starting 0"
+snap 200 0 -f /tmp/junk0.fits
+echo
+echo "writing 0"
+rsync -avx /tmp/junk0.fits arianna:/Temp &
+echo "starting 1"
+snap 200 0 -f /tmp/junk1.fits
+echo
+echo "writing 1"
+rsync -avx /tmp/junk1.fits arianna:/Temp &
+echo "starting 2"
+snap 200 0 -f /tmp/junk2.fits
+echo
+echo "writing 2"
+rsync -avx /tmp/junk2.fits arianna:/Temp &
+echo "starting 3"
+snap 200 0 -f /tmp/junk3.fits
+echo
+echo "writing 3"
+date
+rsync -avx /tmp/junk3.fits arianna:/Temp 
+echo "done"
+date
