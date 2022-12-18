@@ -440,7 +440,7 @@ int main (int argc, char **argv)
         
         /* clean up */
 	if(imgBuf) free(imgBuf);
-	return 1;
+	return 0;
 }
 
 /*********************** WRITEASIFITS() *************************************/
