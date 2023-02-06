@@ -35,6 +35,7 @@ const char *argp_program_bug_address = "";
  * options are 
  * -v ( -vv, verbosity )
  * -f ( writes snapN.fits or snapNAMW.fits )
+ * -F ( writes FITS file to the given filename )
  * -d ( default 0; !=0 enables display and sets reduction factor img->screen )
  * -c ( camera index id; default 0)
  * -p ( default 0; !=0 enables PGM output and sets reduction factor img->file )
@@ -51,7 +52,7 @@ const char *argp_program_bug_address = "";
 struct arguments {
   char *args[2];            /* exptime and gain */
   int vlevel;               /* The int (012)associated with the  -v flag */
-/*  char *fitsname; */          /* Argument for -o */
+  char *fitsname;           /* Argument for -o */
   int fitsflg;              /* flag requesting fitsfile, set by -f */
   char *disp;               /* Argument for -d (string) */
   char *camid;              /* camera ID (string) */
@@ -68,6 +69,7 @@ static struct argp_option options[] =
   {"verbose",   'v', 0,           0, "Produce verbose output; -vv for more"},
   {"disp",      'd', "DisRedFac", 0, "Enable display & set reduction factor"}, 
   {"foutput",   'f', 0,           0, "Write output to simple FITS file"},
+  {"fitsname",  'F', "FITSname",  0, "FITS output filename"},
   {"camid",     'c', "CameraID",  0, "Which Camera? (index, or use -n name)"},
   {"pgmstr",    'p', "PGMRedfac", 0, "Write PGM prevu file snap.pgm, reduced"},
   {"camsetname",'s', "CamSetName",0, "Set nonvolatile CamName and exit"},
@@ -99,8 +101,11 @@ parse_opt (int key, char *arg, struct argp_state *state)
         arguments->disp = arg;
         break;
     case 'f':
-/*        arguments->fitsname = arg; */
         arguments->fitsflg = 1;
+        break;
+    case 'F':
+        arguments->fitsflg = 1;
+        arguments->fitsname = arg;
         break;
     case 'p':
         arguments->pgmstr = arg;
@@ -175,6 +180,7 @@ int main (int argc, char **argv)
         arguments.pgmstr       = (char *)"0";
         arguments.camsetname   = (char *)"" ;
         arguments.camname      = (char *)"" ;
+        arguments.fitsname     = (char *)"" ;
 
         argp_parse (&argp, argc, argv, 0, 0, &arguments);
         
@@ -187,7 +193,8 @@ int main (int argc, char **argv)
         pfac     = atoi(arguments.pgmstr);
         strncpy(camsetnameid,arguments.camsetname,8);
         strncpy(camnameid, arguments.camname, 8);
-
+        strncpy(ffname, arguments.fitsname, 128);
+        
         /*printf("\nCamNum = %d, Dfac = %d\n",CamNum, Dfac);*/
 
         if(arguments.fitsflg != 0){
@@ -206,6 +213,9 @@ int main (int argc, char **argv)
             printf("\nExptime = %d ms", exp_ms);
             printf("\nGain = %d centiBels",asi_gain);
             printf("\nfoutflg = %d",foutflg);
+            if(strlen(ffname) > 0){
+                printf("\nfitsname = %s",ffname);
+            }
             printf("\nverbosity = %d",vflg);
             printf("\ndisp Red Fac = %d",Dfac);
             if(byname){
@@ -350,7 +360,9 @@ int main (int argc, char **argv)
         
         /* write fits file if requested */
        if(foutflg){
-            if(byname == 0){
+            if(strlen(ffname) > 0){
+              ;
+            }else if(byname == 0){
                 sprintf(ffname,"/tmp/snap%d.fits",CamNum);
             }else{
                 sprintf(ffname,"/tmp/snap%s.fits",gotcamname);                
@@ -428,7 +440,7 @@ int main (int argc, char **argv)
         
         /* clean up */
 	if(imgBuf) free(imgBuf);
-	return 1;
+	return 0;
 }
 
 /*********************** WRITEASIFITS() *************************************/
