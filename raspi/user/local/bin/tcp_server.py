@@ -12,19 +12,27 @@ logging.basicConfig(level=logging.DEBUG)
 
 logger = logging.getLogger('fms')
 
+# The bindings between the cameras and the Cable B SM bundles.
+
+cams = {0:'cab3', 1:'cab4',
+        2:'cab2', 3:'cab1'}
+
 def call(cmdStr):
     """Wrap subprocess.run(). """
 
     cmdArgs = shlex.split(cmdStr)
     logger.info("calling %s", cmdArgs)
-    ret = subprocess.run(cmdArgs, timeout=15,
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE,
-                         check=True)
-    if ret.stdout:
-        logger.info("call output: %s", ret.stdout)
-    if ret.stderr:
-        logger.warning("call error: %s", ret.stderr)
+    try:
+        ret = subprocess.run(cmdArgs, timeout=15,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             check=True)
+        if ret.stdout:
+            logger.info("call output: %s", ret.stdout)
+        if ret.stderr:
+            logger.warning("call error: %s", ret.stderr)
+    except Exception as e:
+        logger.error('cmd botch: %s' % (e))
 
 def snap(cam=0, filename=None, exptime=100, gain=0):
     """Take a single exposure with one camera.
@@ -39,18 +47,19 @@ def snap(cam=0, filename=None, exptime=100, gain=0):
 
     return filename
 
-def snapnames():
-    rootDir = '/data/fms'
-    now = datetime.datetime.now()
-    dayDir = now.strftime("%Y-%m-%d")
-    timestamp = now.strftime("%Y%m%d_%H%M%S")
+def snappath(cam):
+    try:
+        rootDir = '/data/fms'
+        now = datetime.datetime.now()
+        dayDir = now.strftime("%Y-%m-%d")
+        timestamp = now.strftime("%Y%m%d_%H%M%S")
+        cable = cams[cam]
 
-    names = []
-    for i in 0,1:
-        filename = 'snap%d_%s.fits' % (i, timestamp)
-        names.append(os.path.join(rootDir, dayDir, filename))
-
-    return names
+        filename = 'snap%d_%s_%s.fits' % (cam, cable, timestamp)
+        path = os.path.join(rootDir, dayDir, filename)
+    except Exception as e:
+        logger.error('path boom: %s' % (e))
+    return path
 
 class FmsRequestHandler(socketserver.BaseRequestHandler):
     def setup(self):
@@ -84,6 +93,7 @@ class FmsRequestHandler(socketserver.BaseRequestHandler):
             self.respond(response)
             return
 
+        logger.info('new cmd: %s (%s)', cmdName, cmdArgs)
         if cmdName == 'exit':
             response = 'OK done'
             self.respond(response)
@@ -106,13 +116,12 @@ class FmsRequestHandler(socketserver.BaseRequestHandler):
             finally:
                 call('alloff')
         elif cmdName == 'all':
-            filenames = snapnames()
             retFiles = []
             try:
                 call('allon')
-                for c in 0,1:
+                for c in cams.keys():
                     cmdArgs['cam'] = c
-                    cmdArgs['filename'] = filenames[c]
+                    cmdArgs['filename'] = snappath(c)
                     filename = snap(**cmdArgs)
                     retFiles.append(filename)
                 response = 'OK %s' % (retFiles)
