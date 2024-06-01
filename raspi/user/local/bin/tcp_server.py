@@ -47,10 +47,11 @@ def snap(cam=0, filename=None, exptime=100, gain=0):
 
     return filename
 
-def snappath(cam):
+def snappath(cam, now=None):
+    if now is None:
+        now = datetime.datetime.now()
     try:
         rootDir = '/data/fms'
-        now = datetime.datetime.now()
         dayDir = now.strftime("%Y-%m-%d")
         timestamp = now.strftime("%Y%m%d_%H%M%S")
         cable = cams[cam]
@@ -115,20 +116,23 @@ class FmsRequestHandler(socketserver.BaseRequestHandler):
                 response = 'ERROR %s' % (e)
             finally:
                 call('alloff')
-        elif cmdName == 'all':
+        elif cmdName in {'all', 'dark'}:
             retFiles = []
+            ts = datetime.datetime.now()
             try:
-                call('allon')
+                if cmdName == 'all':
+                    call('allon')
                 for c in cams.keys():
                     cmdArgs['cam'] = c
-                    cmdArgs['filename'] = snappath(c)
+                    cmdArgs['filename'] = snappath(c, now=ts)
                     filename = snap(**cmdArgs)
                     retFiles.append(filename)
                 response = 'OK %s' % (retFiles)
             except Exception as e:
                 response = 'ERROR %s' % (e)
             finally:
-                call('alloff')
+                if cmdName == 'all':
+                    call('alloff')
         else:
             response = 'ERROR unknown command %s' % (cmdName)
         logger.info("response: %s", response)
