@@ -17,13 +17,13 @@ logger = logging.getLogger('fms')
 cams = {0:'cab3', 1:'cab4',
         2:'cab2', 3:'cab1'}
 
-def call(cmdStr):
+def call(cmdStr, timeout=15.0):
     """Wrap subprocess.run(). """
 
     cmdArgs = shlex.split(cmdStr)
     logger.info("calling %s", cmdArgs)
     try:
-        ret = subprocess.run(cmdArgs, timeout=15,
+        ret = subprocess.run(cmdArgs, timeout=timeout,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE,
                              check=True)
@@ -43,7 +43,7 @@ def snap(cam=0, filename=None, exptime=100, gain=0):
     os.makedirs(dirname, exist_ok=True)
 
     snapCmd = 'snap -c %s -F %s %s %s' % (cam, filename, exptime, gain)
-    call(snapCmd)
+    call(snapCmd, timeout=exptime/10 + 10)
 
     return filename
 
@@ -118,15 +118,26 @@ class FmsRequestHandler(socketserver.BaseRequestHandler):
                 call('alloff')
         elif cmdName in {'all', 'dark'}:
             retFiles = []
-            ts = datetime.datetime.now()
+            if 'nexp' in cmdArgs:
+                nexp = int(cmdArgs['nexp'])
+                del cmdArgs['nexp']
+            else:
+                nexp = 1
+
+            if 'exptime' in cmdArgs:
+                cmdArgs['exptime'] = int(cmdArgs['exptime'])
+                
             try:
                 if cmdName == 'all':
                     call('allon')
-                for c in cams.keys():
-                    cmdArgs['cam'] = c
-                    cmdArgs['filename'] = snappath(c, now=ts)
-                    filename = snap(**cmdArgs)
-                    retFiles.append(filename)
+                for i in range(nexp):
+                    ts = datetime.datetime.now()
+                    for c in cams.keys():
+                        cmdArgs['cam'] = c
+                        cmdArgs['filename'] = snappath(c, now=ts)
+                        filename = snap(**cmdArgs)
+                        retFiles.append(filename)
+                retFiles = ' '.join(retFiles)
                 response = 'OK %s' % (retFiles)
             except Exception as e:
                 response = 'ERROR %s' % (e)
